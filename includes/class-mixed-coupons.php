@@ -27,24 +27,6 @@ class Mixed_Coupons {
 		return true;
 	}
 
-	/**
-	 * Adapted from https://github.com/woocommerce/woocommerce-subscriptions/blob/fd12886d01e1eb16d3644b19320c5e897b1902da/includes/class-wcs-limited-recurring-coupon-manager.php#L84
-	 * @param $code
-	 * @return array|mixed|string
-	 */
-	private static function get_coupon_limit( $code ) {
-		// Retrieve the coupon data.
-		$coupon      = new WC_Coupon( $code );
-		$coupon_type = $coupon->get_discount_type();
-
-		// If we have a virtual coupon, attempt to get the original coupon.
-		if ( WC_Subscriptions_Coupon::is_renewal_cart_coupon( $coupon_type ) ) {
-			$coupon = WC_Subscriptions_Coupon::map_virtual_coupon( $code );
-		}
-
-		return intval( $coupon->get_meta( '_wcs_number_payments' ) );
-	}
-
 	public static function add_admin_coupon_fields( $id ) {
 		$coupon = new WC_Coupon( $id );
 
