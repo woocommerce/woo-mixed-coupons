@@ -1,40 +1,49 @@
+/* eslint-env jquery */
 jQuery( function ( $ ) {
 	'use strict';
 
-	var renewals_wrapper = $( '.wcs_number_payments_field' ),
-		renewals_field = $( '#wcs_number_payments' ),
-		allow_subscriptions_wrapper = $( '.subscription_coupon_allow_subscriptions_wrapper' ),
-		allow_subscriptions_field = $( '#subscription_coupon_allow_subscriptions' ),
-		first_cycle_only_wrapper = $( '.subscription_coupon_allow_subscriptions_first_cycle_only_wrapper' );
-
+	const renewalsWrapper = $( '.wcs_number_payments_field' ),
+		allowSubscriptionsWrapper = $(
+			'.subscription_coupon_allow_subscriptions_wrapper'
+		),
+		allowSubscriptionsField = $(
+			'#subscription_coupon_allow_subscriptions'
+		),
+		firstCycleOnlyWrapper = $(
+			'.subscription_coupon_allow_subscriptions_first_cycle_only_wrapper'
+		);
 
 	$( '#discount_type' ).on( 'change', function () {
-		update_status();
+		updateStatus();
 	} );
 
-	allow_subscriptions_field.change( function () {
-		update_status();
+	allowSubscriptionsField.change( function () {
+		updateStatus();
 	} );
 
-	function update_status() {
-		var selectedOption = $( '#discount_type' ).find( ':selected' ).val();
-		if ( [ 'fixed_cart', 'fixed_product', 'percent' ].indexOf( selectedOption ) >= 0 ) {
-			allow_subscriptions_wrapper.show();
-			if ( allow_subscriptions_field.is( ':checked' ) ) {
-				first_cycle_only_wrapper.show();
+	function updateStatus() {
+		const selectedOption = $( '#discount_type' ).find( ':selected' ).val();
+		if (
+			[ 'fixed_cart', 'fixed_product', 'percent' ].indexOf(
+				selectedOption
+			) >= 0
+		) {
+			allowSubscriptionsWrapper.show();
+			if ( allowSubscriptionsField.is( ':checked' ) ) {
+				firstCycleOnlyWrapper.show();
 			} else {
-				first_cycle_only_wrapper.hide();
+				firstCycleOnlyWrapper.hide();
 			}
 		} else {
-			allow_subscriptions_field.prop( 'checked', false );
-			allow_subscriptions_wrapper.hide();
+			allowSubscriptionsField.prop( 'checked', false );
+			allowSubscriptionsWrapper.hide();
 
-			first_cycle_only_wrapper.prop( 'checked', false );
-			first_cycle_only_wrapper.hide();
+			firstCycleOnlyWrapper.prop( 'checked', false );
+			firstCycleOnlyWrapper.hide();
 		}
 	}
 
-	allow_subscriptions_wrapper.insertBefore( renewals_wrapper );
-	first_cycle_only_wrapper.insertBefore( renewals_wrapper );
-	update_status();
+	allowSubscriptionsWrapper.insertBefore( renewalsWrapper );
+	firstCycleOnlyWrapper.insertBefore( renewalsWrapper );
+	updateStatus();
 } );
