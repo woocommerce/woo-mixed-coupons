@@ -6,6 +6,8 @@ class Mixed_Coupons {
 		add_action( 'woocommerce_coupon_options', [ __CLASS__, 'add_admin_coupon_fields' ], 10 );
 		add_action( 'woocommerce_coupon_options_save', [ __CLASS__, 'save_coupon_fields' ], 10 );
 		add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue_admin_scripts' ] );
+		remove_filter( 'woocommerce_coupon_is_valid_for_product', array( WC_Subscriptions_Coupon::class, 'validate_subscription_coupon_for_product' ), 10, 3 );
+		add_filter( 'woocommerce_coupon_is_valid_for_product', array( __CLASS__, 'validate_subscription_coupon_for_product' ), 10, 3 );
 	}
 
 	public static function enable_subscription_coupon( $bypass_default_checks, $coupon, $coupon_type, $calculation_type, $cart ) {
@@ -67,5 +69,33 @@ class Mixed_Coupons {
 
 	public static function enqueue_admin_scripts() {
 		wp_enqueue_script('subscription-coupon-admin', WOO_MIXED_COUPONS_URL . 'assets/js/admin.js', array('jquery'), '1.0', true);
+	}
+
+	/**
+	 * Validates a subscription coupon's use for a given product.
+	 *
+	 *
+	 * @param bool       $is_valid Whether the coupon is valid for the product.
+	 * @param WC_Product $product  The product object.
+	 * @param WC_Coupon  $coupon   The coupon object.
+	 *
+	 * @return bool Whether the coupon is valid for the product.
+	 */
+	public static function validate_subscription_coupon_for_product( $is_valid, $product, $coupon ) {
+
+		// Exit early if the coupon is already invalid.
+		if ( ! $is_valid ) {
+			return $is_valid;
+		}
+
+		if ( $coupon->get_meta( '_allow_subscriptions' ) !== 'yes' ) {
+			return WC_Subscriptions_Coupon::class::validate_subscription_coupon_for_product( $is_valid, $product, $coupon );
+		}
+
+		if ( ! WC_Subscriptions_Product::is_subscription( $product ) ) {
+			return false;
+		}
+
+		return $is_valid;
 	}
 }
