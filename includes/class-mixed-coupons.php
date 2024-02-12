@@ -89,7 +89,7 @@ class Mixed_Coupons {
 		}
 
 		if ( $coupon->get_meta( '_allow_subscriptions' ) !== 'yes' ) {
-			return WC_Subscriptions_Coupon::class::validate_subscription_coupon_for_product( $is_valid, $product, $coupon );
+			return WC_Subscriptions_Coupon::validate_subscription_coupon_for_product( $is_valid, $product, $coupon );
 		}
 
 		if ( ! WC_Subscriptions_Product::is_subscription( $product ) ) {
